@@ -12,6 +12,7 @@
   "dependencies": {
     "@tanstack/react-router": "^1.114.27",
     "@tanstack/react-start": "^1.114.27",
+    "@webcontainer/api": "^1.5.3-internal.1",
     "bun-types": "^1.2.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

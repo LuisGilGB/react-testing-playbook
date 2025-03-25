@@ -5,6 +5,8 @@ import {
   HeadContent,
   Scripts,
 } from '@tanstack/react-router'
+import './style.css'
+import { WebContainerProvider } from '../contexts/WebContainerContext'
 
 const RootComponent = () => {
   return (
@@ -21,7 +23,9 @@ const RootDocument = ({ children }: Readonly<{ children: ReactNode }>) => {
         <HeadContent />
       </head>
       <body>
-        {children}
+        <WebContainerProvider>
+          {children}
+        </WebContainerProvider>
         <Scripts />
       </body>
     </html>

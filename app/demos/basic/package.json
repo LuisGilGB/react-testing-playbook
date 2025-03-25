@@ -1,0 +1,11 @@
+{
+  "name": "basic-test",
+  "type": "module",
+  "dependencies": {
+    "express": "latest",
+    "nodemon": "latest"
+  },
+  "scripts": {
+    "start": "nodemon --watch './' index.js"
+  }
+}
