@@ -31,7 +31,7 @@ const ContainerVisualizer = () => {
       };
 
       const startDevServer = async () => {
-        const serverProcess = await webContainerInstance.spawn('npm', ['run', 'start'], {
+        const serverProcess = await webContainerInstance.spawn('npm', ['run', 'test:ui'], {
           terminal: {
             rows: terminal.current!.rows,
             cols: terminal.current!.cols
@@ -44,8 +44,9 @@ const ContainerVisualizer = () => {
           }
         }));
 
-        webContainerInstance.on('server-ready', (_port: number, url: string) => {
-          iframeRef.current!.src = url;
+        webContainerInstance.on('server-ready', (port: number, url: string) => {
+          console.log('Port', port, url);
+          iframeRef.current!.src = `${url}/__vitest__/`;
         });
       }
 
@@ -77,7 +78,7 @@ const ContainerVisualizer = () => {
       <div className="flex-1 flex flex-row gap-4">
         <div className="flex-1">
           <textarea
-            defaultValue={files['index.js'].file.contents}
+            defaultValue={files['index.test.tsx'].file.contents}
             className="w-full h-full resize-none border rounded px-4 py-2 bg-black text-white"
             disabled={!webContainerInstance}
             onChange={(e) => {
@@ -88,7 +89,7 @@ const ContainerVisualizer = () => {
           />
         </div>
         <div className="flex-1 overflow-hidden border rounded">
-          <iframe ref={iframeRef} className="w-full h-full" src="about:blank"></iframe>
+          <iframe ref={iframeRef} className="w-full h-full" src="about:blank" title="WebContainer"></iframe>
         </div>
       </div>
       <div className="terminal h-[300px] overflow-hidden" ref={terminalRef}></div>
