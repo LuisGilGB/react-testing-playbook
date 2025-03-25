@@ -7,6 +7,7 @@
         "@tanstack/react-router": "^1.114.27",
         "@tanstack/react-start": "^1.114.27",
         "@webcontainer/api": "^1.5.3-internal.1",
+        "@xterm/xterm": "^5.5.0",
         "bun-types": "^1.2.5",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
@@ -403,6 +404,8 @@
     "@vitejs/plugin-react": ["@vitejs/plugin-react@4.3.4", "", { "dependencies": { "@babel/core": "^7.26.0", "@babel/plugin-transform-react-jsx-self": "^7.25.9", "@babel/plugin-transform-react-jsx-source": "^7.25.9", "@types/babel__core": "^7.20.5", "react-refresh": "^0.14.2" }, "peerDependencies": { "vite": "^4.2.0 || ^5.0.0 || ^6.0.0" } }, "sha512-SCCPBJtYLdE8PX/7ZQAs1QAZ8Jqwih+0VBLum1EGqmCCQal+MIUqLCzj3ZUy8ufbC0cAM4LRlSTm7IQJwWT4ug=="],
 
     "@webcontainer/api": ["@webcontainer/api@1.5.3-internal.1", "", {}, "sha512-c3LpFIJJ5By2Dgu83kp2F1jrjKGStju42RUTIFnJlS7O2S+kMYv+oQ2oBV4Vc7BEY4YBAgqBYzFoPJMr+WP/xg=="],
+
+    "@xterm/xterm": ["@xterm/xterm@5.5.0", "", {}, "sha512-hqJHYaQb5OptNunnyAnkHyM8aCjZ1MEIDTQu1iIbbTD/xops91NB5yq1ZK/dC2JDbVWtF23zUtl9JE2NqwT87A=="],
 
     "abbrev": ["abbrev@3.0.0", "", {}, "sha512-+/kfrslGQ7TNV2ecmQwMJj/B65g5KVq1/L3SGVZ3tCYGqlzFuFCGBZJtMP99wH3NpEUyAjn0zPdPUg0D+DwrOA=="],
 
