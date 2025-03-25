@@ -21,6 +21,10 @@ const startDevServer = async (webContainerInstance: WebContainer, iframeEl: HTML
   });
 }
 
+const writeIndexJs = async (webContainerInstance: WebContainer, content: string) => {
+  await webContainerInstance.fs.writeFile('index.js', content);
+}
+
 const ContainerVisualizer = () => {
   const webContainerInstance = useWebContainer();
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -43,7 +47,15 @@ const ContainerVisualizer = () => {
   return (
     <div className="container">
       <div className="editor">
-        <textarea defaultValue={files['index.js'].file.contents} />
+        <textarea
+          defaultValue={files['index.js'].file.contents}
+          disabled={!webContainerInstance}
+          onChange={(e) => {
+            if (webContainerInstance) {
+              writeIndexJs(webContainerInstance, e.target.value);
+            }
+          }}
+        />
       </div>
       <div className="preview">
         <iframe ref={iframeRef} src="about:blank"></iframe>
