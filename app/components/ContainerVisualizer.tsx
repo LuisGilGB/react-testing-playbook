@@ -3,30 +3,8 @@ import { useWebContainer } from "../contexts/WebContainerContext";
 import { files } from "../demos/files";
 import { WebContainer } from "@webcontainer/api";
 import { Terminal } from '@xterm/xterm';
+import { FitAddon } from '@xterm/addon-fit';
 import '@xterm/xterm/css/xterm.css';
-
-const installDependencies = async (webContainerInstance: WebContainer) => {
-  // Install dependencies
-  const installProcess = await webContainerInstance.spawn('npm', ['install']);
-  // Wait for install command to exit
-  await installProcess.exit;
-  return installProcess;
-}
-
-const startDevServer = async (webContainerInstance: WebContainer, iframeEl: HTMLIFrameElement, terminal: Terminal) => {
-  const serverProcess = await webContainerInstance.spawn('npm', ['run', 'start']);
-
-  serverProcess.output.pipeTo(new WritableStream({
-    write(data) {
-      terminal.write(data);
-    }
-  }));
-
-  // Wait for `server-ready` event
-  webContainerInstance.on('server-ready', (_port: number, url: string) => {
-    iframeEl.src = url;
-  });
-}
 
 const writeIndexJs = async (webContainerInstance: WebContainer, content: string) => {
   await webContainerInstance.fs.writeFile('index.js', content);
@@ -40,29 +18,67 @@ const ContainerVisualizer = () => {
 
   useEffect(() => {
     if (webContainerInstance) {
+      const installDependencies = async () => {
+        const installProcess = await webContainerInstance.spawn('npm', ['install'], {
+          terminal: {
+            rows: terminal.current!.rows,
+            cols: terminal.current!.cols
+          }
+        });
+
+        await installProcess.exit;
+        return installProcess;
+      };
+
+      const startDevServer = async () => {
+        const serverProcess = await webContainerInstance.spawn('npm', ['run', 'start'], {
+          terminal: {
+            rows: terminal.current!.rows,
+            cols: terminal.current!.cols
+          }
+        });
+
+        serverProcess.output.pipeTo(new WritableStream({
+          write(data) {
+            terminal.current?.write(data);
+          }
+        }));
+
+        webContainerInstance.on('server-ready', (_port: number, url: string) => {
+          iframeRef.current!.src = url;
+        });
+      }
+
       terminal.current = new Terminal({
         convertEol: true
       });
+      const fitAddon = new FitAddon();
+      terminal.current.loadAddon(fitAddon);
       terminal.current.open(terminalRef.current!);
-      installDependencies(webContainerInstance)
+      fitAddon.fit();
+      terminal.current.onResize(() => {
+        fitAddon.fit();
+      });
+      installDependencies()
         .then(installProcess => {
           installProcess.output.pipeTo(new WritableStream({
             write(data) {
               terminal.current?.write(data);
             }
           }));
-          startDevServer(webContainerInstance, iframeRef.current!, terminal.current!);
+          startDevServer();
         })
         .catch(console.error);
     }
   }, [webContainerInstance]);
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', gap: 16, padding: 16 }}>
-      <div className="container" style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
-        <div className="editor" style={{ flex: 1 }}>
+    <div className="h-[100vh] flex flex-col gap-4 p-4">
+      <div className="flex-1 flex flex-row gap-4">
+        <div className="flex-1">
           <textarea
             defaultValue={files['index.js'].file.contents}
+            className="w-full h-full resize-none border rounded px-4 py-2 bg-black text-white"
             disabled={!webContainerInstance}
             onChange={(e) => {
               if (webContainerInstance) {
@@ -71,11 +87,11 @@ const ContainerVisualizer = () => {
             }}
           />
         </div>
-        <div className="preview" style={{ flex: 1 }}>
-          <iframe ref={iframeRef} src="about:blank"></iframe>
+        <div className="flex-1 overflow-hidden border rounded">
+          <iframe ref={iframeRef} className="w-full h-full" src="about:blank"></iframe>
         </div>
       </div>
-      <div className="terminal" ref={terminalRef}></div>
+      <div className="terminal h-[300px] overflow-hidden" ref={terminalRef}></div>
     </div>
   );
 };
