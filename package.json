@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vinxi dev",
     "build": "vinxi build",
+    "build:netlify": "vinxi build --preset netlify",
     "start": "vinxi start"
   },
   "dependencies": {

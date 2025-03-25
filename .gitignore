@@ -140,6 +140,15 @@ dist
 
 .docusaurus
 
+# Netlify outputs
+
+.netlify
+
+# Build outputs
+
+.output
+.vinxi
+
 # Serverless directories
 
 .serverless/

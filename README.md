@@ -4,6 +4,8 @@
 
 This project serves as a comprehensive playbook for testing React applications. It provides practical examples, guidelines, and best practices for implementing various testing strategies, including unit, integration, and end-to-end testing.
 
+[Live demo](https://react-testing-playbook.netlify.app/)
+
 ## Table of Contents
 
 - [React Testing Playbook](#react-testing-playbook)
@@ -28,7 +30,7 @@ To install and set up the project, follow these steps:
 1.  Clone the repository:
 
     ```bash
-    git clone [repository-url]
+    git clone git@github.com:LuisGilGB/react-testing-playbook.git
     ```
 2.  Install dependencies using Bun:
 
@@ -77,7 +79,7 @@ This project incorporates several cutting-edge technologies and approaches:
 
 ## License
 
-[License Type]
+MIT
 
 ***
 
