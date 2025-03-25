@@ -4,9 +4,12 @@ import {
   createRootRoute,
   HeadContent,
   Scripts,
-} from '@tanstack/react-router'
-import './style.css'
+} from '@tanstack/react-router';
 import { WebContainerProvider } from '../contexts/WebContainerContext'
+import appCss from "@/styles/app.css?url";
+import { SidebarProvider } from '@/components/ui/sidebar';
+import { SidebarTrigger } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/AppSidebar';
 
 const RootComponent = () => {
   return (
@@ -24,7 +27,17 @@ const RootDocument = ({ children }: Readonly<{ children: ReactNode }>) => {
       </head>
       <body>
         <WebContainerProvider>
-          {children}
+          <SidebarProvider>
+            <AppSidebar />
+            <main className="flex-1 flex flex-col">
+              <header className="flex flex-row justify-start px-4 py-2">
+                <SidebarTrigger />
+              </header>
+              <div className="flex-1">
+                {children}
+              </div>
+            </main>
+          </SidebarProvider>
         </WebContainerProvider>
         <Scripts />
       </body>
@@ -44,6 +57,12 @@ export const Route = createRootRoute({
       },
       {
         title: 'React Testing Playbook',
+      },
+    ],
+    links: [
+      {
+        rel: "stylesheet",
+        href: appCss,
       },
     ],
   }),

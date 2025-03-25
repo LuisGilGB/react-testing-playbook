@@ -29,7 +29,7 @@ const Home = () => {
   //const state = Route.useLoaderData();
 
   return (
-    <ContainerVisualizer />
+    <ContainerVisualizer className="min-h-full" />
   )
 }
 

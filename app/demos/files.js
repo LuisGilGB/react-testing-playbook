@@ -25,7 +25,7 @@ export const files = {
   },
   "scripts": {
     "test": "vitest",
-    "test:ui": "vitest --ui",
+    "test:ui": "vitest --ui --watch",
     "test:run": "vitest run"
   }
 }`,
