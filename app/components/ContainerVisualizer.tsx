@@ -1,18 +1,12 @@
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
-import { useContainerFiles } from "@/contexts/ContainerFilesContext";
 import { cn } from "@/lib/utils";
-import Editor, { Monaco, OnMount } from "@monaco-editor/react";
-import { WebContainer } from "@webcontainer/api";
 import { FitAddon } from '@xterm/addon-fit';
 import { Terminal } from '@xterm/xterm';
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useWebContainer } from "../contexts/WebContainerContext";
 
 import '@xterm/xterm/css/xterm.css';
-
-const writeIndexTestTsx = async (webContainerInstance: WebContainer, content: string) => {
-  await webContainerInstance.fs.writeFile('index.test.tsx', content);
-}
+import CodeEditor from "./CodeEditor";
 
 interface ContainerVisualizerProps {
   testCaseId: string;
@@ -20,13 +14,10 @@ interface ContainerVisualizerProps {
 }
 
 const ContainerVisualizer = ({ className, testCaseId }: ContainerVisualizerProps) => {
-  const { files } = useContainerFiles();
   const webContainerInstance = useWebContainer();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
   const terminal = useRef<Terminal | null>(null);
-  const [editorContent, setEditorContent] = useState<string | null>(files[`${testCaseId}.test.tsx`]?.file.contents || null);
-  const editorRef = useRef<any>(null);
 
   useEffect(() => {
     if (webContainerInstance) {
@@ -84,102 +75,6 @@ const ContainerVisualizer = ({ className, testCaseId }: ContainerVisualizerProps
     }
   }, [webContainerInstance]);
 
-  const handleEditorWillMount = (monaco: Monaco) => {
-    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-      target: monaco.languages.typescript.ScriptTarget.ESNext,
-      module: monaco.languages.typescript.ModuleKind.ESNext,
-      moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-      jsx: monaco.languages.typescript.JsxEmit.ReactJSX,
-      esModuleInterop: true,
-      allowJs: true,
-      skipLibCheck: true,
-      strict: true,
-      isolatedModules: true,
-      noEmit: true
-    });
-
-    monaco.languages.typescript.typescriptDefaults.addExtraLib(
-      `
-      declare module "react" {
-        export = React;
-      }
-      
-      declare namespace React {
-        function createElement(type: any, props?: any, ...children: any[]): any;
-        function Fragment(props: any): any;
-      }
-      
-      declare module "@testing-library/react" {
-        export function render(component: any, options?: any): any;
-      }
-
-      declare global {
-        function describe(name: string, fn: () => void): void;
-        function it(name: string, fn: () => void | Promise<void>): void;
-        function test(name: string, fn: () => void | Promise<void>): void;
-        function expect<T>(actual: T): {
-          toBe(expected: T): void;
-          toEqual(expected: any): void;
-          toContain(expected: any): void;
-          toBeInTheDocument(): void;
-          toHaveTextContent(expected: string): void;
-          toBeVisible(): void;
-          not: {
-            toBe(expected: T): void;
-            toEqual(expected: any): void;
-            toContain(expected: any): void;
-            toBeInTheDocument(): void;
-            toHaveTextContent(expected: string): void;
-            toBeVisible(): void;
-          }
-        };
-        function beforeEach(fn: () => void | Promise<void>): void;
-        function afterEach(fn: () => void | Promise<void>): void;
-        function beforeAll(fn: () => void | Promise<void>): void;
-        function afterAll(fn: () => void | Promise<void>): void;
-        function vi: {
-          fn(): jest.Mock;
-          mock(path: string): void;
-        };
-      }
-      `,
-      'react-types.d.ts'
-    );
-  };
-
-  const handleEditorChange = (value: string | undefined) => {
-    if (value !== undefined) {
-      setEditorContent(value);
-      if (webContainerInstance) {
-        writeIndexTestTsx(webContainerInstance, value);
-      }
-    }
-  };
-
-  const handleEditorDidMount: OnMount = (editor) => {
-    editorRef.current = editor;
-
-    editor.focus();
-
-    editor.onDidChangeModelContent(() => {
-      setTimeout(() => {
-        if (editorRef.current && document.activeElement !== document.querySelector('.monaco-editor textarea')) {
-          editorRef.current.focus();
-        }
-      }, 10);
-    });
-
-    const editorContainer = editor.getDomNode()?.parentElement;
-    if (editorContainer) {
-      editorContainer.addEventListener('mousedown', (e) => {
-        if (e.target === editorContainer) {
-          e.preventDefault();
-          editor.focus();
-        }
-      });
-    }
-  };
-
   return (
     <div className={cn("flex flex-col gap-4 p-4", className)}>
       <ResizablePanelGroup
@@ -188,23 +83,10 @@ const ContainerVisualizer = ({ className, testCaseId }: ContainerVisualizerProps
       >
         <ResizablePanel defaultSize={50} minSize={30}>
           <div className="h-full p-2">
-            <Editor
-              height="100%"
-              defaultLanguage="typescript"
-              defaultValue={editorContent ?? undefined}
-              theme="vs-dark"
-              path="index.test.tsx"
-              beforeMount={handleEditorWillMount}
-              onMount={handleEditorDidMount}
-              options={{
-                minimap: { enabled: false },
-                scrollBeyondLastLine: false,
-                fontSize: 14,
-                readOnly: !webContainerInstance,
-                automaticLayout: true,
-                fixedOverflowWidgets: true
-              }}
-              onChange={handleEditorChange}
+            <CodeEditor
+              key={testCaseId}
+              testCaseId={testCaseId}
+              webContainerInstance={webContainerInstance}
             />
           </div>
         </ResizablePanel>
