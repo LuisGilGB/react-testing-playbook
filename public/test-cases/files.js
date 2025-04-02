@@ -88,16 +88,20 @@ export default defineConfig({
   },
 };
 
+try {
+  const dirname = path.dirname(new URL(import.meta.url).pathname);
+  const templatesDirPath = path.join(dirname, 'templates');
 
-const dirname = path.dirname(new URL(import.meta.url).pathname);
-const templatesDirPath = path.join(dirname, 'templates');
-
-for (const file of fs.readdirSync(templatesDirPath)) {
-  files[file.substring(0, file.length - '.template'.length)] = {
-    file: {
-      contents: fs.readFileSync(`${templatesDirPath}/${file}`, 'utf-8'),
-    },
-  };
+  for (const file of fs.readdirSync(templatesDirPath)) {
+    files[file.substring(0, file.length - '.template'.length)] = {
+      file: {
+        contents: fs.readFileSync(`${templatesDirPath}/${file}`, 'utf-8'),
+      },
+    };
+  }
+} catch (error) {
+  console.error(error);
+  files['error'] = error;
 }
 
 export { files };

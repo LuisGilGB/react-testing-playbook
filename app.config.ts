@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   server: {
+    preset: 'netlify',
     routeRules: {
       '**': {
         headers: {
