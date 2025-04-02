@@ -1,0 +1,27 @@
+import { render } from "@testing-library/react"
+
+it("gets input elements by their placeholder text", () => {
+  const { getByPlaceholderText } = render(
+    <form>
+      <input 
+        type="text" 
+        placeholder="Enter your email" 
+      />
+      <input 
+        type="text" 
+        placeholder="Enter your username" 
+      />
+      <textarea 
+        placeholder="Write your message here"
+      ></textarea>
+    </form>
+  )
+
+  const emailInput = getByPlaceholderText("Enter your email")
+  const usernameInput = getByPlaceholderText("Enter your username")
+  const messageTextarea = getByPlaceholderText("Write your message here")
+  
+  expect(emailInput).toBeInTheDocument()
+  expect(usernameInput).toBeInTheDocument()
+  expect(messageTextarea).toBeInTheDocument()
+});

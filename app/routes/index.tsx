@@ -1,5 +1,5 @@
 import * as fs from 'node:fs'
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 
 const filePath = 'count.txt'
@@ -25,9 +25,8 @@ const getCount = createServerFn({
 
 const HomePage = () => {
   return (
-    <div className='flex flex-col items-center justify-center gap-4'>
-      <p>Hi! Select a test!</p>
-      <Link to="/tests/basic-render">Basic render</Link>
+    <div className='h-full flex flex-col items-center justify-center gap-4'>
+      <p>Hi! Select a test from the sidebar!</p>
     </div>
   )
 }

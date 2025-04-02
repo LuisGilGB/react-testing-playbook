@@ -1,0 +1,25 @@
+import { render } from "@testing-library/react"
+
+it("gets form elements by their associated label text", () => {
+  const { getByLabelText } = render(
+    <form>
+      <label htmlFor="username">Username</label>
+      <input id="username" type="text" />
+      
+      <label htmlFor="password">Password</label>
+      <input id="password" type="password" />
+      
+      <label>
+        <input type="checkbox" /> Remember me
+      </label>
+    </form>
+  )
+
+  const usernameInput = getByLabelText("Username")
+  const passwordInput = getByLabelText("Password")
+  const rememberMeCheckbox = getByLabelText("Remember me")
+  
+  expect(usernameInput).toBeInTheDocument()
+  expect(passwordInput).toBeInTheDocument()
+  expect(rememberMeCheckbox).toBeInTheDocument()
+});

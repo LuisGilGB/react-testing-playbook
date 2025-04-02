@@ -1,0 +1,19 @@
+import { render } from "@testing-library/react"
+
+it("gets an element by its ARIA role", () => {
+  const { getByRole } = render(
+    <div>
+      <button>Click me</button>
+      <a href="https://example.com">Visit example</a>
+      <input type="checkbox" aria-label="Accept terms" />
+    </div>
+  )
+
+  const button = getByRole("button")
+  const link = getByRole("link")
+  const checkbox = getByRole("checkbox")
+  
+  expect(button).toBeInTheDocument()
+  expect(link).toBeInTheDocument()
+  expect(checkbox).toBeInTheDocument()
+});
