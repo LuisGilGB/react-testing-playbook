@@ -12,12 +12,19 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
+import { Route as TestsTestCaseIdImport } from './routes/tests.$testCaseId'
 
 // Create/Update Routes
 
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const TestsTestCaseIdRoute = TestsTestCaseIdImport.update({
+  id: '/tests/$testCaseId',
+  path: '/tests/$testCaseId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -32,6 +39,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/tests/$testCaseId': {
+      id: '/tests/$testCaseId'
+      path: '/tests/$testCaseId'
+      fullPath: '/tests/$testCaseId'
+      preLoaderRoute: typeof TestsTestCaseIdImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -39,32 +53,37 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/tests/$testCaseId': typeof TestsTestCaseIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/tests/$testCaseId': typeof TestsTestCaseIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/tests/$testCaseId': typeof TestsTestCaseIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/tests/$testCaseId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/tests/$testCaseId'
+  id: '__root__' | '/' | '/tests/$testCaseId'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  TestsTestCaseIdRoute: typeof TestsTestCaseIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  TestsTestCaseIdRoute: TestsTestCaseIdRoute,
 }
 
 export const routeTree = rootRoute
@@ -77,11 +96,15 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/tests/$testCaseId"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/tests/$testCaseId": {
+      "filePath": "tests.$testCaseId.tsx"
     }
   }
 }

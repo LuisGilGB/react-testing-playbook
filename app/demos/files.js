@@ -1,11 +1,14 @@
 /** @satisfies {import('@webcontainer/api').FileSystemTree} */
 
-export const files = {
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+
+const files = {
   'package.json': {
     file: {
       contents: `
 {
-  "name": "react-testing-demo-001",
+  "name": "react-testing-demos",
   "type": "module",
   "dependencies": {
     "react": "latest",
@@ -13,6 +16,7 @@ export const files = {
   },
   "devDependencies": {
     "@testing-library/dom": "latest",
+    "@testing-library/jest-dom": "latest",
     "@testing-library/react": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
@@ -31,6 +35,13 @@ export const files = {
 }`,
     },
   },
+  'setupTests.js': {
+    file: {
+      contents: `
+import '@testing-library/jest-dom';
+`,
+    },
+  },
   'vitest.config.js': {
     file: {
       contents: `
@@ -38,8 +49,9 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
-  globals: true,
+    globals: true,
     environment: 'jsdom',
+    setupFiles: ["./setupTests.js"],
   },
 })
 `,
@@ -74,15 +86,18 @@ export default defineConfig({
 `,
     },
   },
-  'index.test.tsx': {
-    file: {
-      contents: `
-import { render } from "@testing-library/react"
-
-it("renders without crashing", () => {
-  render(<div>Hello World</div>)
-})
-`,
-    },
-  },
 };
+
+
+const dirname = path.dirname(new URL(import.meta.url).pathname);
+const templatesDirPath = path.join(dirname, 'templates');
+
+for (const file of fs.readdirSync(templatesDirPath)) {
+  files[file.substring(0, file.length - '.template'.length)] = {
+    file: {
+      contents: fs.readFileSync(`${templatesDirPath}/${file}`, 'utf-8'),
+    },
+  };
+}
+
+export { files };

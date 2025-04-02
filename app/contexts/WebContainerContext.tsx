@@ -1,10 +1,19 @@
+import { useContainerFiles } from "@/contexts/ContainerFilesContext";
 import { WebContainer } from "@webcontainer/api";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { files } from "../demos/files";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 
-const WebContainerContext = createContext<WebContainer | null>(null);
+interface WebContainerContextValue {
+  webcontainerInstance: WebContainer | null;
+  mountTestCase: (testCaseId: string) => Promise<void>;
+}
+
+const WebContainerContext = createContext<WebContainerContextValue>({
+  webcontainerInstance: null,
+  mountTestCase: async () => { }
+});
 
 export const WebContainerProvider = ({ children }: { children: React.ReactNode }) => {
+  const { files } = useContainerFiles();
   const webcontainerInstanceRef = useRef<WebContainer | null>(null);
   const [webcontainerInstance, setWebcontainerInstance] = useState<WebContainer | null>(null);
 
@@ -16,15 +25,24 @@ export const WebContainerProvider = ({ children }: { children: React.ReactNode }
     });
   }, []);
 
+  const mountTestCase = useCallback(async (testCaseId: string) => {
+    if (!webcontainerInstance) return;
+    await webcontainerInstance.mount(files);
+  }, [webcontainerInstance, files]);
+
   return (
-    <WebContainerContext value={webcontainerInstance}>
+    <WebContainerContext value={{ webcontainerInstance, mountTestCase }}>
       {children}
     </WebContainerContext>
   );
 };
 
 export const useWebContainer = (): WebContainer | null => {
-  const webcontainerInstance = useContext(WebContainerContext);
+  const { webcontainerInstance } = useContext(WebContainerContext);
 
   return webcontainerInstance;
+};
+
+export const useWebContainerContext = () => {
+  return useContext(WebContainerContext);
 };

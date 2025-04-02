@@ -1,0 +1,36 @@
+import { render, screen } from "@testing-library/react"
+import { useEffect, useState } from "react"
+
+const AsyncComponent = () => {
+  const [isLoaded, setIsLoaded] = useState(false)
+  
+  useEffect(() => {
+    // Simulate data loading
+    const timer = setTimeout(() => {
+      setIsLoaded(true)
+    }, 100)
+    
+    return () => clearTimeout(timer)
+  }, [])
+  
+  return (
+    <div>
+      {isLoaded ? (
+        <p>Data has been loaded!</p>
+      ) : (
+        <p>Loading data...</p>
+      )}
+    </div>
+  )
+}
+
+it("finds elements that appear asynchronously", async () => {
+  render(<AsyncComponent />)
+  
+  // First, we can verify the loading state is shown
+  expect(screen.getByText("Loading data...")).toBeInTheDocument()
+  
+  // Then, we can wait for the loaded state to appear
+  const loadedElement = await screen.findByText("Data has been loaded!")
+  expect(loadedElement).toBeInTheDocument()
+});
