@@ -1,3 +1,5 @@
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { useContainerFiles } from "@/contexts/ContainerFilesContext";
 import { cn } from "@/lib/utils";
 import Editor, { Monaco, OnMount } from "@monaco-editor/react";
 import { WebContainer } from "@webcontainer/api";
@@ -5,8 +7,6 @@ import { FitAddon } from '@xterm/addon-fit';
 import { Terminal } from '@xterm/xterm';
 import { useEffect, useRef, useState } from "react";
 import { useWebContainer } from "../contexts/WebContainerContext";
-import { files } from "../demos/files";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 
 import '@xterm/xterm/css/xterm.css';
 
@@ -15,15 +15,17 @@ const writeIndexTestTsx = async (webContainerInstance: WebContainer, content: st
 }
 
 interface ContainerVisualizerProps {
+  testCaseId: string;
   className?: string;
 }
 
-const ContainerVisualizer = ({ className }: ContainerVisualizerProps) => {
+const ContainerVisualizer = ({ className, testCaseId }: ContainerVisualizerProps) => {
+  const { files } = useContainerFiles();
   const webContainerInstance = useWebContainer();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
   const terminal = useRef<Terminal | null>(null);
-  const [editorContent, setEditorContent] = useState<string>(files['index.test.tsx'].file.contents);
+  const [editorContent, setEditorContent] = useState<string | null>(files[`${testCaseId}.test.tsx`]?.file.contents || null);
   const editorRef = useRef<any>(null);
 
   useEffect(() => {
@@ -54,8 +56,7 @@ const ContainerVisualizer = ({ className }: ContainerVisualizerProps) => {
           }
         }));
 
-        webContainerInstance.on('server-ready', (port: number, url: string) => {
-          console.log('Port', port, url);
+        webContainerInstance.on('server-ready', (_port: number, url: string) => {
           iframeRef.current!.src = `${url}/__vitest__/`;
         });
       }
@@ -190,7 +191,7 @@ const ContainerVisualizer = ({ className }: ContainerVisualizerProps) => {
             <Editor
               height="100%"
               defaultLanguage="typescript"
-              defaultValue={editorContent}
+              defaultValue={editorContent ?? undefined}
               theme="vs-dark"
               path="index.test.tsx"
               beforeMount={handleEditorWillMount}

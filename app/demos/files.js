@@ -1,11 +1,14 @@
 /** @satisfies {import('@webcontainer/api').FileSystemTree} */
 
-export const files = {
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+
+const files = {
   'package.json': {
     file: {
       contents: `
 {
-  "name": "react-testing-demo-001",
+  "name": "react-testing-demos",
   "type": "module",
   "dependencies": {
     "react": "latest",
@@ -74,15 +77,18 @@ export default defineConfig({
 `,
     },
   },
-  'index.test.tsx': {
-    file: {
-      contents: `
-import { render } from "@testing-library/react"
-
-it("renders without crashing", () => {
-  render(<div>Hello World</div>)
-})
-`,
-    },
-  },
 };
+
+
+const dirname = path.dirname(new URL(import.meta.url).pathname);
+const templatesDirPath = path.join(dirname, 'templates');
+
+for (const file of fs.readdirSync(templatesDirPath)) {
+  files[file.substring(0, file.length - '.template'.length)] = {
+    file: {
+      contents: fs.readFileSync(`${templatesDirPath}/${file}`, 'utf-8'),
+    },
+  };
+}
+
+export { files };

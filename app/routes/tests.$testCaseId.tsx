@@ -11,9 +11,11 @@ const ContainerVisualizer = lazy<ContainerVisualizerType>(() =>
 )
 
 const TestCasePage = () => {
+  const { testCaseId } = Route.useParams();
+
   return (
     <Suspense fallback={null}>
-      <ContainerVisualizer className="min-h-full" />
+      <ContainerVisualizer testCaseId={testCaseId} className="min-h-full" />
     </Suspense>
   )
 }
