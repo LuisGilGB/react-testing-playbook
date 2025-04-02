@@ -16,6 +16,7 @@ const files = {
   },
   "devDependencies": {
     "@testing-library/dom": "latest",
+    "@testing-library/jest-dom": "latest",
     "@testing-library/react": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
@@ -34,6 +35,13 @@ const files = {
 }`,
     },
   },
+  'setupTests.js': {
+    file: {
+      contents: `
+import '@testing-library/jest-dom';
+`,
+    },
+  },
   'vitest.config.js': {
     file: {
       contents: `
@@ -41,8 +49,9 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
-  globals: true,
+    globals: true,
     environment: 'jsdom',
+    setupFiles: ["./setupTests.js"],
   },
 })
 `,
