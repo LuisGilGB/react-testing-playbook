@@ -90,7 +90,9 @@ export default defineConfig({
 
 try {
   const dirname = path.dirname(new URL(import.meta.url).pathname);
+  files.dirname = dirname;
   const templatesDirPath = path.join(dirname, 'templates');
+  files.templatesDirPath = templatesDirPath;
 
   for (const file of fs.readdirSync(templatesDirPath)) {
     files[file.substring(0, file.length - '.template'.length)] = {
