@@ -1,7 +1,6 @@
 /** @satisfies {import('@webcontainer/api').FileSystemTree} */
 
 import * as fs from 'node:fs';
-import * as path from 'node:path';
 
 const files = {
   'package.json': {
@@ -89,9 +88,7 @@ export default defineConfig({
 };
 
 try {
-  const dirname = path.dirname(new URL(import.meta.url).pathname);
-  files.dirname = dirname;
-  const templatesDirPath = path.join(dirname, 'templates');
+  const templatesDirPath = `${import.meta.env.TSS_OUTPUT_PUBLIC_DIR}/test-cases/templates`;
   files.templatesDirPath = templatesDirPath;
 
   for (const file of fs.readdirSync(templatesDirPath)) {
