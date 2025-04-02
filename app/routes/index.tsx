@@ -1,18 +1,8 @@
 import * as fs from 'node:fs'
 import { createFileRoute } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
-import { Suspense, lazy } from 'react'
-import { ContainerVisualizerType } from '../components/ContainerVisualizer'
 
 const filePath = 'count.txt'
-
-const ContainerVisualizer = lazy<ContainerVisualizerType>(() =>
-  new Promise((resolve) => {
-    if (typeof window !== 'undefined') {
-      import('../components/ContainerVisualizer').then(({ default: Component }) => resolve({ default: Component }));
-    }
-  })
-)
 
 const readCount = async () => {
   return parseInt(
@@ -33,18 +23,15 @@ const getCount = createServerFn({
 //    await fs.promises.writeFile(filePath, `${count + data}`)
 //  })
 
-const Home = () => {
-  //const router = useRouter()
-  //const state = Route.useLoaderData();
-
+const HomePage = () => {
   return (
-    <Suspense fallback={null}>
-      <ContainerVisualizer className="min-h-full" />
-    </Suspense>
+    <div className='flex items-center justify-center'>
+      <p>Hi! Select a test!</p>
+    </div>
   )
 }
 
 export const Route = createFileRoute('/')({
-  component: Home,
+  component: HomePage,
   loader: async () => await getCount(),
 })

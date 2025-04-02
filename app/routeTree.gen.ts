@@ -11,9 +11,16 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as TestCaseIdImport } from './routes/$testCaseId'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const TestCaseIdRoute = TestCaseIdImport.update({
+  id: '/$testCaseId',
+  path: '/$testCaseId',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -32,6 +39,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/$testCaseId': {
+      id: '/$testCaseId'
+      path: '/$testCaseId'
+      fullPath: '/$testCaseId'
+      preLoaderRoute: typeof TestCaseIdImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -39,32 +53,37 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$testCaseId': typeof TestCaseIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$testCaseId': typeof TestCaseIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/$testCaseId': typeof TestCaseIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/$testCaseId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/$testCaseId'
+  id: '__root__' | '/' | '/$testCaseId'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  TestCaseIdRoute: typeof TestCaseIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  TestCaseIdRoute: TestCaseIdRoute,
 }
 
 export const routeTree = rootRoute
@@ -77,11 +96,15 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/$testCaseId"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/$testCaseId": {
+      "filePath": "$testCaseId.tsx"
     }
   }
 }
