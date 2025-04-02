@@ -1,0 +1,14 @@
+import { render } from "@testing-library/react"
+
+it("gets and element with the given text", () => {
+  const { getByText } = render(
+    <ul>
+      <li>First</li>
+      <li>Second</li>
+      <li>Third</li>
+    </ul>
+  )
+
+  const third = getByText("Third")
+  expect(third).toBeInTheDocument()
+});

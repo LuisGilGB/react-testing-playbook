@@ -28,7 +28,7 @@ export const AppSidebar = () => {
                 <Link to="/tests/basic-render">Basic render</Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <Link to="/tests/2">Test case 2</Link>
+                <Link to="/tests/get-by-text">Get by text</Link>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

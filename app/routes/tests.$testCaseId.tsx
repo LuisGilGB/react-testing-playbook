@@ -15,7 +15,7 @@ const TestCasePage = () => {
 
   return (
     <Suspense fallback={null}>
-      <ContainerVisualizer testCaseId={testCaseId} className="min-h-full" />
+      <ContainerVisualizer key={testCaseId} testCaseId={testCaseId} className="min-h-full" />
     </Suspense>
   )
 }
