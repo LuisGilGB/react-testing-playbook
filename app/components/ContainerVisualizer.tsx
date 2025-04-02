@@ -224,4 +224,6 @@ const ContainerVisualizer = ({ className }: ContainerVisualizerProps) => {
   );
 };
 
+export type ContainerVisualizerType = typeof ContainerVisualizer;
+
 export default ContainerVisualizer;
