@@ -88,8 +88,7 @@ export default defineConfig({
 };
 
 try {
-  const templatesDirPath = `${import.meta.env.PROD ? './' : import.meta.env.TSS_OUTPUT_PUBLIC_DIR}/test-cases/templates`;
-  files.meta = import.meta;
+  const templatesDirPath = `${import.meta.env.PROD ? import.meta.env.TSS_PUBLIC_BASE : import.meta.env.TSS_OUTPUT_PUBLIC_DIR}/test-cases/templates`;
   files.templatesDirPath = templatesDirPath;
 
   for (const file of fs.readdirSync(templatesDirPath)) {
