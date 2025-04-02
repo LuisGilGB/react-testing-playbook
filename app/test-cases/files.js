@@ -88,13 +88,13 @@ export default defineConfig({
 };
 
 try {
-  const templatesDirPath = `${import.meta.env.PROD ? import.meta.env.TSS_PUBLIC_BASE : import.meta.env.TSS_OUTPUT_PUBLIC_DIR}/test-cases/templates`;
+  const templatesDirPath = `${import.meta.env.PROD ? import.meta.env.TSS_PUBLIC_BASE : `${import.meta.env.TSS_OUTPUT_PUBLIC_DIR}/`}/test-cases/templates`;
   files.templatesDirPath = templatesDirPath;
 
   for (const file of fs.readdirSync(templatesDirPath)) {
     files[file.substring(0, file.length - '.template'.length)] = {
       file: {
-        contents: fs.readFileSync(`${templatesDirPath}${file}`, 'utf-8'),
+        contents: fs.readFileSync(`${templatesDirPath}/${file}`, 'utf-8'),
       },
     };
   }
