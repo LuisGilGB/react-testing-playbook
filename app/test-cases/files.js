@@ -94,7 +94,7 @@ try {
   for (const file of fs.readdirSync(templatesDirPath)) {
     files[file.substring(0, file.length - '.template'.length)] = {
       file: {
-        contents: fs.readFileSync(`${templatesDirPath}/${file}`, 'utf-8'),
+        contents: fs.readFileSync(`${templatesDirPath}${file}`, 'utf-8'),
       },
     };
   }
