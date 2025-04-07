@@ -1,6 +1,5 @@
 /** @satisfies {import('@webcontainer/api').FileSystemTree} */
 
-import * as fs from 'node:fs';
 
 const files = {
   'package.json': {
@@ -88,14 +87,14 @@ export default defineConfig({
 };
 
 try {
-  const templatesDirPath = `${import.meta.env.PROD ? process.cwd() : import.meta.env.TSS_OUTPUT_PUBLIC_DIR}/test-cases/templates`;
-  files.templatesDirPath = templatesDirPath;
-  files.dirContent = fs.readdirSync(process.cwd());
+  const modules = import.meta.glob('./static/templates/*.template');
+  // Resultado: { './static/templates/a.template': () => import(...) }
+  const imports = await Promise.all(Object.values(modules).map(fn => fn()));
 
-  for (const file of fs.readdirSync(templatesDirPath)) {
-    files[file.substring(0, file.length - '.template'.length)] = {
+  for (const [path, content] of imports) {
+    files[path.substring(1, path.length - '.template'.length)] = {
       file: {
-        contents: fs.readFileSync(`${templatesDirPath}/${file}`, 'utf-8'),
+        contents: content,
       },
     };
   }
