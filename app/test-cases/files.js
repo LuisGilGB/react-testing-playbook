@@ -91,6 +91,8 @@ try {
   const templatesDirPath = `${import.meta.env.PROD ? process.cwd() : import.meta.env.TSS_OUTPUT_PUBLIC_DIR}/test-cases/templates`;
   files.templatesDirPath = templatesDirPath;
 
+  console.log(fs.readdirSync(templatesDirPath));
+
   for (const file of fs.readdirSync(templatesDirPath)) {
     files[file.substring(0, file.length - '.template'.length)] = {
       file: {
