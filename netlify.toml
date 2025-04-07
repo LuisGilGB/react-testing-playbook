@@ -1,2 +1,2 @@
 [functions]
-  included_files = ["dist/test-cases/**"]
+  included_files = ["public/**.template"]
