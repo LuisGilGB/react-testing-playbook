@@ -1,2 +1,2 @@
 [functions]
-included_files = ["dist/public/**"]
+  included_files = ["dist/test-cases/**"]
