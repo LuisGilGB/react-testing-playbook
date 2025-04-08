@@ -86,14 +86,15 @@ export default defineConfig({
   },
 };
 
-try {
-  const modules = import.meta.glob('./templates/*.template');
-  const imports = await Promise.all(Object.keys(modules).map((path, _i, _arr) => new Promise((resolve) => {
+const modules = import.meta.glob('./templates/*.template');
+
+Promise.all(Object.keys(modules).map((path, _i, _arr) =>
+  new Promise((resolve) => {
     import(/* @vite-ignore */ `${path}?raw`).then((content) => {
       resolve([path, content.default]);
     })
-  })));
-
+  }))
+).then((imports) => {
   for (const [path, content] of imports) {
     let fileName = path.split('/').at(-1)
     fileName = fileName.substring(0, fileName.length - '.template'.length);
@@ -103,9 +104,9 @@ try {
       },
     };
   }
-} catch (error) {
+}).catch(error => {
   console.error(error);
   files['error'] = error;
-}
+});
 
 export { files };
