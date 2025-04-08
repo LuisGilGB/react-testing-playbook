@@ -4,12 +4,12 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState } f
 
 interface WebContainerContextValue {
   webcontainerInstance: WebContainer | null;
-  mountTestCase: (testCaseId: string) => Promise<void>;
+  mountTestCases: () => Promise<void>;
 }
 
 const WebContainerContext = createContext<WebContainerContextValue>({
   webcontainerInstance: null,
-  mountTestCase: async () => { }
+  mountTestCases: async () => { }
 });
 
 export const WebContainerProvider = ({ children }: { children: React.ReactNode }) => {
@@ -25,13 +25,13 @@ export const WebContainerProvider = ({ children }: { children: React.ReactNode }
     });
   }, []);
 
-  const mountTestCase = useCallback(async (testCaseId: string) => {
+  const mountTestCases = useCallback(async () => {
     if (!webcontainerInstance) return;
     await webcontainerInstance.mount(files);
   }, [webcontainerInstance, files]);
 
   return (
-    <WebContainerContext value={{ webcontainerInstance, mountTestCase }}>
+    <WebContainerContext value={{ webcontainerInstance, mountTestCases: mountTestCases }}>
       {children}
     </WebContainerContext>
   );
